@@ -85,48 +85,28 @@ public class encryptiondecrytion {
     private static final String RSA = "RSA";
     private static Scanner sc;
     
-    public static byte[] Create_Digital_Signature(
-        byte[] input,
-        PrivateKey Key)
-        throws Exception
+    public static byte[] Create_Digital_Signature(byte[] input,PrivateKey Key)throws Exception
     {
-        Signature signature
-            = Signature.getInstance(
-                SIGNING_ALGORITHM);
+        Signature signature = Signature.getInstance(SIGNING_ALGORITHM);
         signature.initSign(Key);
         signature.update(input);
         return signature.sign();
     }
     
-    public static KeyPair Generate_RSA_KeyPair()
-        throws Exception
+    public static KeyPair Generate_RSA_KeyPair()throws Exception
     {
-        SecureRandom secureRandom
-            = new SecureRandom();
-        KeyPairGenerator keyPairGenerator
-            = KeyPairGenerator
-                  .getInstance(RSA);
-        keyPairGenerator
-            .initialize(
-                512,secureRandom);
-        return keyPairGenerator
-            .generateKeyPair();
+        SecureRandom secureRandom = new SecureRandom();
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA);
+        keyPairGenerator.initialize( 2048,secureRandom);
+        return keyPairGenerator.generateKeyPair();
     }
   
-     public static boolean
-    Verify_Digital_Signature(
-        byte[] input,
-        byte[] signatureToVerify,
-        PublicKey key)
-        throws Exception
+    public static boolean Verify_Digital_Signature(byte[] input,byte[] signatureToVerify,PublicKey key)throws Exception
     {
-        Signature signature
-            = Signature.getInstance(
-                SIGNING_ALGORITHM);
+        Signature signature = Signature.getInstance(SIGNING_ALGORITHM);
         signature.initVerify(key);
         signature.update(input);
-        return signature
-            .verify(signatureToVerify);
+        return signature.verify(signatureToVerify);
     }
     private static final String encryptionKey           = "ABCDEFGHIJKLMNOP";
     private static final String characterEncoding       = "UTF-8";
@@ -150,7 +130,7 @@ public class encryptiondecrytion {
         }
         return encryptedText;
     }
-     public static String Adecrypt(String encryptedText) {
+    public static String Adecrypt(String encryptedText) {
         String decryptedText = "";
         try {
             Cipher cipher = Cipher.getInstance(cipherTransformation);
@@ -168,40 +148,30 @@ public class encryptiondecrytion {
         return decryptedText;
     }
     public static void main(String[] args) throws Exception  {
-        String input
-            = "GEEKSFORGEEKS IS A"
-              + " COMPUTER SCIENCE PORTAL";
-        KeyPair keyPair
-            = Generate_RSA_KeyPair();
+        String input= "This IS A"+ " Final Year Project";
+        KeyPair keyPair = Generate_RSA_KeyPair();
         
         PublicKey publicKey = keyPair.getPublic();
 
-        String publicKeyString =
-    				Base64.getEncoder().encodeToString(publicKey.getEncoded());
+        String publicKeyString = Base64.getEncoder().encodeToString(publicKey.getEncoded());
 
-    	System.out.println("public key = "+ publicKeyString);
+    	/*System.out.println("public key = "+ publicKeyString);*/
         
         PrivateKey privateKey = keyPair.getPrivate();
 
-        String privateKeyString =
-    				Base64.getEncoder().encodeToString(privateKey.getEncoded());
+        String privateKeyString = Base64.getEncoder().encodeToString(privateKey.getEncoded());
 
-    	System.out.println("private key = "+ privateKeyString);
+    	/*System.out.println("private key = "+ privateKeyString);*/
 
   
         // Function Call
-        byte[] signature
-            = Create_Digital_Signature(
-                input.getBytes(),
-                keyPair.getPrivate());
+        byte[] signature = Create_Digital_Signature( input.getBytes(),keyPair.getPrivate());
         
         String k="";
         for(int i=0;i<signature.length; i++){
             k+=signature[i];
         }
-        System.out.println(
-            "Signature Value:"
-            +k);
+        /*System.out.println("Signature Value:"+k);*/
   
         Path path = Paths.get("C:\\Users\\user\\Desktop\\NetBeansDoc\\Digital.txt");
         try{
@@ -214,35 +184,28 @@ public class encryptiondecrytion {
      
         
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter String : ");
+        System.out.println("Enter String User Wanted To Encrypt: ");
         String plainString = sc.nextLine();
         String encyptStr   = Aencrypt(plainString);
-        System.out.println("AEC Encrypt String  : "+encyptStr);
+        System.out.println("AES Encrypt String  : "+encyptStr);
         
         
         Cipher encryptionCipher = Cipher.getInstance("RSA");
-    		encryptionCipher.init(Cipher.ENCRYPT_MODE,privateKey);
-    		String message = encyptStr;
-    		byte[] encryptedMessage =
-    		encryptionCipher.doFinal(message.getBytes());
-    		String encryption =
-    				Base64.getEncoder().encodeToString(encryptedMessage);
+        encryptionCipher.init(Cipher.ENCRYPT_MODE,privateKey);
+        String message = encyptStr;
+    	byte[] encryptedMessage =
+    	encryptionCipher.doFinal(message.getBytes());
+    	String encryption = Base64.getEncoder().encodeToString(encryptedMessage);
                 
                
                
-    		System.out.println(" RSA encrypted message = "+encryption);
+    	System.out.println("RSA encrypted String = "+encryption);
                 
                 
-        System.out.println(
-            "Verification: "
-            + Verify_Digital_Signature(
-                  input.getBytes(),
-                  signature, keyPair.getPublic()));
-      /*  /*pattern Decryptor*/
-      /*
-        */
+       /* System.out.println("Verification: "+ Verify_Digital_Signature(input.getBytes(),signature, keyPair.getPublic()));*/
+     
         
-        
+        System.out.println("Enter the digital Signature:");
         String str = sc.nextLine();
       
         
@@ -284,15 +247,15 @@ public class encryptiondecrytion {
             
              
             
-            Cipher decryptionCipher = Cipher.getInstance("RSA");
-    		decryptionCipher.init(Cipher.DECRYPT_MODE,publicKey);
-    		byte[] decryptedMessage;
-            decryptedMessage = decryptionCipher.doFinal(encryptedMessage);
-    		String decryption = new String(decryptedMessage);
-    		System.out.println(" RSA decrypted message = "+decryption);
+          Cipher decryptionCipher = Cipher.getInstance("RSA");
+    	  decryptionCipher.init(Cipher.DECRYPT_MODE,publicKey);
+    	  byte[] decryptedMessage;
+          decryptedMessage = decryptionCipher.doFinal(encryptedMessage);
+    	  String decryption = new String(decryptedMessage);
+    	  System.out.println("RSA decrypted message = "+decryption);
                 
-                String decryptStr  = Adecrypt(decryption);
-                System.out.println("AEC Decrypt String  : "+decryptStr);
+          String decryptStr  = Adecrypt(decryption);
+          System.out.println("AES Decrypt String  : "+decryptStr);
                 
         /*}
         else{
@@ -305,56 +268,7 @@ public class encryptiondecrytion {
         }
        
     
-    /*KeyPairGenerator keyPairGenerator =
-    		KeyPairGenerator.getInstance("RSA");
-    		SecureRandom secureRandom = new SecureRandom();
-
-    		keyPairGenerator.initialize(1024,secureRandom);
-
-    		KeyPair pair = keyPairGenerator.generateKeyPair();
-
-    		PublicKey publicKey = pair.getPublic();
-
-    		String publicKeyString =
-    				Base64.getEncoder().encodeToString(publicKey.getEncoded());
-
-    		System.out.println("public key = "+ publicKeyString);
-
-    		PrivateKey privateKey = pair.getPrivate();
-
-    		String privateKeyString =
-    				Base64.getEncoder().encodeToString(privateKey.getEncoded());
-
-    		System.out.println("private key = "+ privateKeyString);
-
-    		//Encrypt Hello world message
-    		Cipher encryptionCipher = Cipher.getInstance("RSA");
-    		encryptionCipher.init(Cipher.ENCRYPT_MODE,privateKey);
-    		String message = "Hello world";
-    		byte[] encryptedMessage =
-    		encryptionCipher.doFinal(message.getBytes());
-    		String encryption =
-    				Base64.getEncoder().encodeToString(encryptedMessage);
-    		System.out.println("encrypted message = "+encryption);
-
-
-
-
-
-
-       
    
-    		Cipher decryptionCipher = Cipher.getInstance("RSA");
-    		decryptionCipher.init(Cipher.DECRYPT_MODE,publicKey);
-    		byte[] decryptedMessage =
-    				decryptionCipher.doFinal(encryptedMessage);
-    		String decryption = new String(decryptedMessage);
-    		System.out.println("decrypted message = "+decryption);
-                */
-           
-        
-
-    		
     		
  
 
