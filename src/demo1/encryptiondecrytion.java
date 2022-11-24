@@ -5,8 +5,17 @@
 package demo1;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import static java.awt.SystemColor.window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -72,9 +81,17 @@ import javax.crypto.NoSuchPaddingException;
 
 import java.util.Base64;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 /**
  *
@@ -84,6 +101,13 @@ public class encryptiondecrytion {
     private static final String SIGNING_ALGORITHM= "SHA256withRSA";
     private static final String RSA = "RSA";
     private static Scanner sc;
+    
+    private static final String encryptionKey           = "ABCDEFGHIJKLMNOP";
+    private static final String characterEncoding       = "UTF-8";
+    private static final String cipherTransformation    = "AES/CBC/PKCS5PADDING";
+    private static final String aesEncryptionAlgorithem = "AES";
+    
+    
     
     public static byte[] Create_Digital_Signature(byte[] input,PrivateKey Key)throws Exception
     {
@@ -108,11 +132,7 @@ public class encryptiondecrytion {
         signature.update(input);
         return signature.verify(signatureToVerify);
     }
-    private static final String encryptionKey           = "ABCDEFGHIJKLMNOP";
-    private static final String characterEncoding       = "UTF-8";
-    private static final String cipherTransformation    = "AES/CBC/PKCS5PADDING";
-    private static final String aesEncryptionAlgorithem = "AES";
-    
+   
     public static String Aencrypt(String plainText) {
         String encryptedText = "";
         try {
@@ -147,6 +167,7 @@ public class encryptiondecrytion {
         }
         return decryptedText;
     }
+    
     public static void main(String[] args) throws Exception  {
         String input= "This IS A"+ " Final Year Project";
         KeyPair keyPair = Generate_RSA_KeyPair();
@@ -210,61 +231,116 @@ public class encryptiondecrytion {
       
         
         if( str.equals(k)){
+       
+            JFrame jfm = new JFrame();
+            jfm.setTitle("Android Lock Screen By Tony Stark");
+            jfm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jfm.setSize(400, 550);
+            jfm.setLocation(300,50);
+            jfm.getContentPane().setBackground(Color.WHITE);
+            AndroidLockScreenNew an= new AndroidLockScreenNew();
+            jfm.setLayout(new BorderLayout());
+            jfm.add(an,BorderLayout.CENTER);
+            JLabel lb = new JLabel("Pattern Will Be Displayed Here");
+            lb.setFont(new Font("Arial",lb.getFont().getStyle(),20));
+            lb.setBorder(BorderFactory.createTitledBorder(null, "Click The Button", TitledBorder.CENTER, TitledBorder.ABOVE_TOP, new Font("Tahoma", 1, 24), new Color(204, 0, 0)));
+            jfm.add(lb,BorderLayout.SOUTH);
+            an.setOutputComponent(lb);
+            JLabel lb1 = new JLabel(" Submit Button");
+            lb1.setFont(new Font("Arial",lb.getFont().getStyle(),20));
+            jfm.add(lb1,BorderLayout.SOUTH);
+            an.setOutputComponent(lb1);
+            jfm.setVisible(true);
+        
+            lb1.addMouseListener(new MouseListener(){
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    String str="", str1="";
+                    lb1.setText("   Submitted Succefully"); 
+                    jfm.dispose();
+                
+                    Path fileName1 = Path.of("C:\\Users\\user\\Desktop\\NetBeansDoc\\Lock.txt");
+                    try {
+                        str = Files.readString(fileName1);
+                    } catch (IOException ex) {
+                        Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                
+                    Path fileName2 = Path.of("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt");
+                    try {
+                        str1 = Files.readString(fileName2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+
+                    if(str.equals(str1)){
+                    
+                        Cipher decryptionCipher;
+                        try {
+                            decryptionCipher = Cipher.getInstance("RSA");
+                            decryptionCipher.init(Cipher.DECRYPT_MODE,publicKey);
+                            byte[] decryptedMessage;
+                            decryptedMessage = decryptionCipher.doFinal(encryptedMessage);
+                            String decryption = new String(decryptedMessage);
+                            System.out.println("RSA decrypted message = "+decryption);
+                
+                            String decryptStr  = Adecrypt(decryption);
+                            System.out.println("AES Decrypt String  : "+decryptStr);
+                        } catch (NoSuchAlgorithmException ex) {
+                            Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (NoSuchPaddingException ex) {
+                            Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IllegalBlockSizeException ex) {
+                            Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (BadPaddingException ex) {
+                            Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InvalidKeyException ex) {
+                            Logger.getLogger(encryptiondecrytion.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        System.exit(0);
+                    }
+                    else{
+                        System.out.println("Wrong Pattern");
+                        System.exit(0);
+                    }
+                
+                 
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    lb1.setText(RSA); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                 // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                }
             
-        /*JFrame jfm1 = new JFrame();
-        jfm1.setTitle("Android Lock Screen By Tony Stark");
-        jfm1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jfm1.setSize(400, 550);
-        jfm1.setLocation(300,50);
-        jfm1.getContentPane().setBackground(Color.WHITE);
-        AndroidLockScreenNew an1= new AndroidLockScreenNew();
-        jfm1.setLayout(new BorderLayout());
-        jfm1.add(an1,BorderLayout.CENTER);
-        JLabel lb1 = new JLabel("Pattern Will Be Displayed Here");
-        lb1.setFont(new Font("Arial",lb1.getFont().getStyle(),20));
-        lb1.setBorder(BorderFactory.createTitledBorder(null, "Output", TitledBorder.CENTER, TitledBorder.ABOVE_TOP, new Font("Tahoma", 1, 24), new Color(204, 0, 0)));
-        jfm1.add(lb1,BorderLayout.SOUTH);
-        an1.setOutputComponent(lb1);
-        jfm1.setVisible(true);
-        
-        Path fileName
-            = Path.of("C:\\Users\\user\\Desktop\\NetBeansDoc\\Lock.txt");
-        String l = Files.readString(fileName);
-        
-        System.out.println(l);
-        
-        Path fileName1
-            = Path.of("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt");
-        String m = Files.readString(fileName1);
-        
-        System.out.println(m);
-        File myObj = new File("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt"); 
-        myObj.delete();
-        
-        if(l.equals(m)){*/
+            });
+       
             
             
             
              
             
-          Cipher decryptionCipher = Cipher.getInstance("RSA");
-    	  decryptionCipher.init(Cipher.DECRYPT_MODE,publicKey);
-    	  byte[] decryptedMessage;
-          decryptedMessage = decryptionCipher.doFinal(encryptedMessage);
-    	  String decryption = new String(decryptedMessage);
-    	  System.out.println("RSA decrypted message = "+decryption);
-                
-          String decryptStr  = Adecrypt(decryption);
-          System.out.println("AES Decrypt String  : "+decryptStr);
-                
-        /*}
-        else{
-                System.out.println("Wrong Pattern");
-        }*/
-            
+         
+               
         }
         else{
             System.out.println("Wrong Signature");
+            System.exit(0);
         }
        
     
@@ -272,6 +348,6 @@ public class encryptiondecrytion {
     		
  
 
-}
+    }
     
 }

@@ -18,6 +18,7 @@ package demo1;
  */
 
 import java.awt.AlphaComposite;
+import java.util.concurrent.TimeUnit;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,11 +46,19 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.TitledBorder;
 
 import java.awt.Graphics2D;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
 
 import javax.swing.JPanel;
 
@@ -66,10 +75,10 @@ public class AndroidLockScreenNew extends JPanel implements Runnable{
 
     private Thread th;
     private Graphics2D g;
-    private int DOTS=9;
+    private  int DOTS=9;
     private boolean trues[]= new boolean[DOTS];
     private Rectangle rect[] = new Rectangle[DOTS];
-    private int pattern[]= new int[DOTS];
+    private  int pattern[]= new int[DOTS];
     private List<Line2D.Double> lines = new ArrayList<>();
     private Color ink= new Color(255,144,0);
     private Color dot=Color.RED;    
@@ -77,9 +86,10 @@ public class AndroidLockScreenNew extends JPanel implements Runnable{
     private int end,start,index=1,stroke=2,time=5,rdots=(int)Math.sqrt(DOTS);
     private int incw=20,oncw;
     private boolean drawing=false;
-    private String patt="";
+    private  String patt="";
     private Timer timer;
     private JLabel output;
+   
 
      AndroidLockScreenNew(){
 
@@ -257,15 +267,41 @@ public class AndroidLockScreenNew extends JPanel implements Runnable{
          }
          patt=s.substring(1);
         
-         output.setText("Pattern = "+patt);
          
-        Path path = Paths.get("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt");
-        try{
-            Files.writeString(path, patt, StandardCharsets.UTF_8);
+         Path path
+            = Paths.get("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt");
+        try {
+            Files.writeString(path, patt,
+                    StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            Logger.getLogger(AndroidLockScreenNew.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(IOException ex){
-            System.out.print("INvalid Path");
-        }
+       
+        
+     }
+     
+     public static String get() throws FileNotFoundException, IOException {
+     
+            String s="";
+            String data = ""; 
+            for(int i=0;i<new AndroidLockScreenNew().pattern.length;++i){
+                s+=","+new AndroidLockScreenNew().pattern[i];
+             }
+             new AndroidLockScreenNew().patt=s.substring(1);
+             
+         
+
+            String name=new AndroidLockScreenNew().patt;
+            FileInputStream fstream = new FileInputStream("C:\\Users\\user\\Desktop\\NetBeansDoc\\patterndecrypter.txt"); 
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            while ((name = br.readLine()) != null) { 
+            data+=name+"\n";
+            }
+            in.close(); 
+         
+        return data;
+     
      }
      
      public void setOutputComponent(JLabel l){
