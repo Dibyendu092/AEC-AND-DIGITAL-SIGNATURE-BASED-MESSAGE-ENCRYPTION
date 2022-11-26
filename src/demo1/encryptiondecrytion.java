@@ -223,15 +223,19 @@ public class encryptiondecrytion {
     	System.out.println("RSA encrypted String = "+encryption);
                 
                 
+
        /* System.out.println("Verification: "+ Verify_Digital_Signature(input.getBytes(),signature, keyPair.getPublic()));*/
      
         
-        System.out.println("Enter the digital Signature:");
-        String str = sc.nextLine();
+        /*System.out.println("Enter the digital Signature:");
+        String str = sc.nextLine();*/
       
-        
-        if( str.equals(k)){
-       
+        boolean b;
+        b = Verify_Digital_Signature(
+                input.getBytes(),
+                signature, keyPair.getPublic());
+        if(b){
+            System.out.println("Digital Verification is True");
             JFrame jfm = new JFrame();
             jfm.setTitle("Android Lock Screen By Tony Stark");
             jfm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
